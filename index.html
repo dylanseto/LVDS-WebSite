@@ -10,10 +10,32 @@
 
   <!-- ================================================================
        SIDEBAR / TASKBAR — stays fixed on the left while you scroll
+       On mobile it slides off-screen and is toggled by a menu button.
        ================================================================ -->
+  <!-- Mobile menu toggle button -->
+  <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="Toggle table of contents" aria-expanded="false">
+    <span class="toggle-bar"></span>
+    <span class="toggle-bar"></span>
+    <span class="toggle-bar"></span>
+  </button>
+
+  <!-- Backdrop shown when the sidebar is open on mobile -->
+  <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
   <aside class="sidebar" aria-label="Table of contents">
+    <!-- Close button inside the sidebar (mobile only) -->
+    <button id="sidebar-close" class="sidebar-close" type="button" aria-label="Close table of contents">&times;</button>
+
     <h1>LVDS</h1>
     <div class="subtitle">Original Screenplay</div>
+
+    <h2>Filter by Character</h2>
+    <div class="filter-row">
+      <select id="character-filter" class="character-filter" aria-label="Filter scenes by character">
+        <option value="all">All Characters</option>
+      </select>
+      <button id="filter-reset" class="filter-reset" type="button" title="Reset filter">&times;</button>
+    </div>
 
     <h2>Table of Contents</h2>
     <ul class="toc">

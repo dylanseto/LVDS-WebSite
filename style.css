@@ -114,6 +114,87 @@ body {
   padding-top: 14px;
 }
 
+/* ---- Character filter dropdown ---- */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.character-filter {
+  flex: 1;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10pt;
+  background: #1f1f1f;
+  color: var(--sidebar-text);
+  border: 1px solid #333;
+  border-radius: 3px;
+  padding: 8px 10px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--sidebar-accent) 50%),
+    linear-gradient(135deg, var(--sidebar-accent) 50%, transparent 50%);
+  background-position: calc(100% - 14px) center, calc(100% - 9px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.character-filter:hover {
+  border-color: var(--sidebar-accent);
+}
+
+.character-filter:focus {
+  outline: none;
+  border-color: var(--sidebar-accent);
+  box-shadow: 0 0 0 1px var(--sidebar-accent);
+}
+
+.character-filter option {
+  background: #1a1a1a;
+  color: var(--sidebar-text);
+}
+
+.filter-reset {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12pt;
+  line-height: 1;
+  background: #1f1f1f;
+  color: var(--sidebar-text);
+  border: 1px solid #333;
+  border-radius: 3px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.filter-reset:hover {
+  background: #2a2a2a;
+  color: var(--sidebar-accent);
+  border-color: var(--sidebar-accent);
+}
+
+/* A scene that is filtered out */
+.scene.hidden-scene {
+  display: none;
+}
+
+/* A TOC entry whose scene was filtered out */
+.toc li.hidden-toc {
+  display: none;
+}
+
+/* Small note shown when a filter yields no scenes */
+.empty-note {
+  max-width: 8.5in;
+  margin: 40px auto;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12pt;
+  color: #888;
+}
+
 /* ---- Main content ---- */
 .content {
   margin-left: var(--sidebar-width);
@@ -232,19 +313,6 @@ body {
   letter-spacing: 3px;
 }
 
-/* ---- Responsive ---- */
-@media (max-width: 768px) {
-  :root {
-    --sidebar-width: 240px;
-  }
-  .content {
-    padding: 30px 16px 80px;
-  }
-  .screenplay {
-    padding: 0.6in 0.5in 1.5in;
-  }
-}
-
 /* ---- Scrollbar styling for the sidebar ---- */
 .sidebar::-webkit-scrollbar {
   width: 6px;
@@ -258,4 +326,181 @@ body {
 }
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: #444;
+}
+
+/* ---- Mobile menu toggle button (hidden on desktop) ---- */
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 200;
+  width: 44px;
+  height: 44px;
+  background: var(--sidebar-bg);
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.sidebar-toggle:hover {
+  background: #1f1f1f;
+  border-color: var(--sidebar-accent);
+}
+
+.toggle-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--sidebar-text);
+  border-radius: 1px;
+  transition: opacity 0.2s, transform 0.25s;
+}
+
+/* Animate hamburger into an X when the sidebar is open on mobile */
+.sidebar-toggle.is-open .toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.sidebar-toggle.is-open .toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+.sidebar-toggle.is-open .toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ---- Backdrop (mobile only) ---- */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 150;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.sidebar-backdrop.is-visible {
+  opacity: 1;
+}
+
+/* ---- Close button inside sidebar (mobile only) ---- */
+.sidebar-close {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  background: transparent;
+  color: var(--sidebar-text);
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 16pt;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.sidebar-close:hover {
+  background: #1f1f1f;
+  color: var(--sidebar-accent);
+  border-color: var(--sidebar-accent);
+}
+
+/* ============================================================
+   Responsive / mobile
+   On small screens the sidebar becomes a slide-in drawer that is
+   toggled by the hamburger button, with a dimming backdrop behind.
+   The screenplay remains full-width and readable.
+   ============================================================ */
+
+/* Tablet and below */
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: 260px;
+  }
+  .content {
+    padding: 60px 24px 100px;
+  }
+  .screenplay {
+    padding: 0.75in 0.75in 1.75in;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 280px;
+  }
+
+  /* Sidebar becomes a slide-in drawer */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  /* Show the toggle and close buttons */
+  .sidebar-toggle {
+    display: flex;
+  }
+  .sidebar-close {
+    display: block;
+  }
+
+  /* Backdrop is visible (as a flex-able element) when active */
+  .sidebar-backdrop.is-active {
+    display: block;
+  }
+
+  /* Full-width content; no left margin for the sidebar */
+  .content {
+    margin-left: 0;
+    padding: 64px 16px 80px;
+  }
+
+  /* The paper scales down with comfortable margins */
+  .screenplay {
+    max-width: 100%;
+    padding: 0.5in 0.4in 1.5in;
+  }
+
+  .title-page {
+    padding-top: 1.5in;
+    margin-bottom: 1in;
+  }
+
+  /* Dialogue and parentheticals use a percentage width so they
+     stay readable on narrow screens instead of overflowing. */
+  .parenthetical,
+  .dialogue p {
+    max-width: 85%;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 420px) {
+  .content {
+    padding: 60px 8px 80px;
+  }
+  .screenplay {
+    padding: 0.4in 0.3in 1.25in;
+  }
+  .parenthetical,
+  .dialogue p {
+    max-width: 92%;
+  }
+  .title-page h1 {
+    font-size: 14pt;
+  }
 }
