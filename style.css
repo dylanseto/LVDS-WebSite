@@ -1,0 +1,261 @@
+/* ==========================================================================
+   LVDS — Screenplay Website Template
+   Screenplay text: 12-point Courier
+   Sidebar taskbar: fixed, remains visible while scrolling
+   ========================================================================== */
+
+:root {
+  --sidebar-width: 300px;
+  --paper-bg: #ffffff;
+  --screen-bg: #1a1a1a;
+  --sidebar-bg: #111111;
+  --sidebar-text: #d8d8d8;
+  --sidebar-accent: #e0a84a;
+  --text-color: #111111;
+}
+
+/* ---- Reset / base ---- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12pt;
+  background: var(--screen-bg);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+/* ---- Sidebar / taskbar ---- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: 28px 24px;
+  border-right: 1px solid #2a2a2a;
+  z-index: 100;
+}
+
+.sidebar h1 {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 18pt;
+  letter-spacing: 1px;
+  color: var(--sidebar-accent);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.sidebar .subtitle {
+  font-size: 9pt;
+  color: #888;
+  margin-bottom: 28px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.sidebar h2 {
+  font-size: 11pt;
+  color: var(--sidebar-accent);
+  margin: 24px 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 6px;
+}
+
+.toc {
+  list-style: none;
+}
+
+.toc li {
+  margin-bottom: 6px;
+}
+
+.toc a {
+  display: block;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 10pt;
+  padding: 6px 10px;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  word-break: break-word;
+}
+
+.toc a:hover {
+  background: #1f1f1f;
+  border-left-color: var(--sidebar-accent);
+  color: #fff;
+}
+
+.toc a.active {
+  background: #222;
+  border-left-color: var(--sidebar-accent);
+  color: #fff;
+}
+
+.sidebar-footer {
+  margin-top: 32px;
+  font-size: 8pt;
+  color: #555;
+  border-top: 1px solid #2a2a2a;
+  padding-top: 14px;
+}
+
+/* ---- Main content ---- */
+.content {
+  margin-left: var(--sidebar-width);
+  padding: 60px 40px 120px;
+  min-height: 100vh;
+}
+
+/* The "paper" the screenplay is printed on */
+.screenplay {
+  max-width: 8.5in;
+  margin: 0 auto;
+  background: var(--paper-bg);
+  padding: 1in 1in 2in;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12pt;
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+/* Title page (inside the paper) */
+.title-page {
+  text-align: center;
+  padding-top: 3in;
+  margin-bottom: 2in;
+}
+
+.title-page h1 {
+  font-size: 16pt;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.title-page .byline {
+  font-size: 12pt;
+  margin-top: 20px;
+}
+
+.title-page .author {
+  font-size: 12pt;
+  margin-top: 4px;
+}
+
+/* Scene anchor target offset so headings aren't hidden behind nothing */
+.scene {
+  scroll-margin-top: 20px;
+}
+
+/* Scene heading: slug line */
+.scene-heading {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 24px 0 12px;
+  border-top: 2px solid #000;
+  padding-top: 12px;
+}
+
+/* First scene doesn't need the top divider */
+.scene:first-of-type .scene-heading {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* Action / description lines */
+.action {
+  margin: 12px 0;
+  text-align: left;
+}
+
+/* Character cue */
+.character {
+  text-align: center;
+  text-transform: uppercase;
+  margin: 16px 0 0;
+  font-weight: bold;
+}
+
+/* Parenthetical */
+.parenthetical {
+  text-align: center;
+  margin: 0;
+  max-width: 3.5in;
+  margin-left: auto;
+  margin-right: auto;
+  font-style: italic;
+}
+
+/* Dialogue */
+.dialogue {
+  text-align: center;
+  margin: 0;
+}
+
+.dialogue p {
+  max-width: 3.5in;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+/* Transition */
+.transition {
+  text-align: right;
+  text-transform: uppercase;
+  margin: 16px 0;
+  font-weight: bold;
+}
+
+/* "THE END" */
+.the-end {
+  text-align: center;
+  text-transform: uppercase;
+  margin-top: 60px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 240px;
+  }
+  .content {
+    padding: 30px 16px 80px;
+  }
+  .screenplay {
+    padding: 0.6in 0.5in 1.5in;
+  }
+}
+
+/* ---- Scrollbar styling for the sidebar ---- */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar::-webkit-scrollbar-track {
+  background: #111;
+}
+.sidebar::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
