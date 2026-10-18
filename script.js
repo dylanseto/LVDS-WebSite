@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LVDS — Screenplay Website Template
+   Le Voyage de Setojeda — Screenplay Website Template
    Highlights the current scene in the sidebar TOC as the user scrolls.
    ========================================================================== */
 
@@ -71,6 +71,38 @@
     if (e.key === "Escape" && sidebar && sidebar.classList.contains("is-open")) {
       closeSidebar();
     }
+  });
+
+  /* ======================================================================
+     Tab switching (Contents / About)
+     ====================================================================== */
+
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+  const panels = Array.from(document.querySelectorAll(".tab-panel"));
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      const targetPanelId = tab.getAttribute("aria-controls");
+
+      // Deactivate all tabs and panels.
+      tabs.forEach(function (t) {
+        t.classList.remove("is-active");
+        t.setAttribute("aria-selected", "false");
+      });
+      panels.forEach(function (p) {
+        p.classList.remove("is-active");
+        p.setAttribute("hidden", "");
+      });
+
+      // Activate the clicked tab and its panel.
+      tab.classList.add("is-active");
+      tab.setAttribute("aria-selected", "true");
+      const panel = document.getElementById(targetPanelId);
+      if (panel) {
+        panel.classList.add("is-active");
+        panel.removeAttribute("hidden");
+      }
+    });
   });
 
   /* ======================================================================
@@ -161,16 +193,35 @@
     });
   }
 
-  // Build a sorted, unique list of every character in the screenplay.
-  const characterSet = {};
+  // Named characters only — generic/background roles are excluded from the
+  // filter dropdown but still appear in the screenplay text.
+  var NAMED_CHARACTERS = {
+    "DYLAN": true,
+    "IZZY": true,
+    "FRED": true,
+    "MONICA": true,
+    "DANIELLE": true,
+    "GABRIEL": true,
+    "EUGENE": true,
+    "LOUISE": true,
+    "IRENE": true,
+    "PAUL": true,
+    "SAV": true,
+    "JODI": true,
+    "JP": true,
+    "GERALDINE": true
+  };
+
+  // Build a sorted, unique list of named characters in the screenplay.
+  var characterSet = {};
   scenes.forEach(function (scene) {
     charactersInScene(scene).forEach(function (name) {
-      if (name) {
+      if (name && NAMED_CHARACTERS[name]) {
         characterSet[name] = true;
       }
     });
   });
-  const characterNames = Object.keys(characterSet).sort();
+  var characterNames = Object.keys(characterSet).sort();
 
   // Populate the dropdown (the "All Characters" option already exists in HTML).
   if (filterSelect) {
@@ -265,5 +316,22 @@
       }
       applyFilter("all");
     });
+  }
+
+  /* ----------------------------------------------------------------------
+     Twemoji — replace Unicode emoji with Apple-style image icons so they
+     render consistently on all platforms (Windows would otherwise show
+     Segoe UI Emoji).  We parse only the About panel to keep it scoped.
+     ---------------------------------------------------------------------- */
+
+  if (window.twemoji) {
+    var aboutPanel = document.getElementById("panel-about");
+    if (aboutPanel) {
+      window.twemoji.parse(aboutPanel, {
+        base: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/",
+        ext: ".png",
+        className: "emoji-icon",
+      });
+    }
   }
 })();

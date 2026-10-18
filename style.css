@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LVDS — Screenplay Website Template
+   Le Voyage de Setojeda — Screenplay Website Template
    Screenplay text: 12-point Courier
    Sidebar taskbar: fixed, remains visible while scrolling
    ========================================================================== */
@@ -7,10 +7,13 @@
 :root {
   --sidebar-width: 300px;
   --paper-bg: #ffffff;
-  --screen-bg: #1a1a1a;
-  --sidebar-bg: #111111;
-  --sidebar-text: #d8d8d8;
-  --sidebar-accent: #e0a84a;
+  --screen-bg: #160f24;
+  --sidebar-bg: #241a36;
+  --sidebar-text: #e6d9f7;
+  --sidebar-accent: #c79bf0;
+  --sidebar-border: #4a3760;
+  --sidebar-hover: #3a2a4d;
+  --sidebar-muted: #a890c8;
   --text-color: #111111;
 }
 
@@ -44,7 +47,7 @@ body {
   background: var(--sidebar-bg);
   color: var(--sidebar-text);
   padding: 28px 24px;
-  border-right: 1px solid #2a2a2a;
+  border-right: 1px solid var(--sidebar-border);
   z-index: 100;
 }
 
@@ -59,10 +62,52 @@ body {
 
 .sidebar .subtitle {
   font-size: 9pt;
-  color: #888;
-  margin-bottom: 28px;
+  color: var(--sidebar-muted);
+  margin-bottom: 18px;
   letter-spacing: 2px;
   text-transform: uppercase;
+}
+
+/* ---- Tabs ---- */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.tab {
+  flex: 1;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10pt;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: transparent;
+  color: var(--sidebar-muted);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 4px;
+  padding: 8px 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.tab:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+}
+
+.tab.is-active {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-accent);
+  border-color: var(--sidebar-accent);
+}
+
+/* Tab panels: only the active one is shown */
+.tab-panel {
+  display: none;
+}
+
+.tab-panel.is-active {
+  display: block;
 }
 
 .sidebar h2 {
@@ -71,7 +116,7 @@ body {
   margin: 24px 0 10px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--sidebar-border);
   padding-bottom: 6px;
 }
 
@@ -95,13 +140,13 @@ body {
 }
 
 .toc a:hover {
-  background: #1f1f1f;
+  background: var(--sidebar-hover);
   border-left-color: var(--sidebar-accent);
   color: #fff;
 }
 
 .toc a.active {
-  background: #222;
+  background: var(--sidebar-hover);
   border-left-color: var(--sidebar-accent);
   color: #fff;
 }
@@ -109,8 +154,8 @@ body {
 .sidebar-footer {
   margin-top: 32px;
   font-size: 8pt;
-  color: #555;
-  border-top: 1px solid #2a2a2a;
+  color: var(--sidebar-muted);
+  border-top: 1px solid var(--sidebar-border);
   padding-top: 14px;
 }
 
@@ -126,9 +171,9 @@ body {
   flex: 1;
   font-family: "Courier New", Courier, monospace;
   font-size: 10pt;
-  background: #1f1f1f;
+  background: var(--sidebar-hover);
   color: var(--sidebar-text);
-  border: 1px solid #333;
+  border: 1px solid var(--sidebar-border);
   border-radius: 3px;
   padding: 8px 10px;
   cursor: pointer;
@@ -152,7 +197,7 @@ body {
 }
 
 .character-filter option {
-  background: #1a1a1a;
+  background: var(--sidebar-bg);
   color: var(--sidebar-text);
 }
 
@@ -160,9 +205,9 @@ body {
   font-family: "Courier New", Courier, monospace;
   font-size: 12pt;
   line-height: 1;
-  background: #1f1f1f;
+  background: var(--sidebar-hover);
   color: var(--sidebar-text);
-  border: 1px solid #333;
+  border: 1px solid var(--sidebar-border);
   border-radius: 3px;
   padding: 6px 10px;
   cursor: pointer;
@@ -170,7 +215,7 @@ body {
 }
 
 .filter-reset:hover {
-  background: #2a2a2a;
+  background: var(--sidebar-border);
   color: var(--sidebar-accent);
   border-color: var(--sidebar-accent);
 }
@@ -192,7 +237,39 @@ body {
   text-align: center;
   font-family: "Courier New", Courier, monospace;
   font-size: 12pt;
-  color: #888;
+  color: var(--sidebar-muted);
+}
+
+/* ---- About panel text ---- */
+.about-text {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10pt;
+  line-height: 1.6;
+  color: var(--sidebar-text);
+}
+
+.about-text p {
+  margin: 0 0 14px;
+}
+
+/* Apple-style emoji icons (rendered by Twemoji) */
+.emoji-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.1em;
+}
+
+/* ---- Spotify embed ---- */
+.spotify-embed {
+  margin-top: 4px;
+}
+
+.spotify-embed iframe {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
 }
 
 /* ---- Main content ---- */
@@ -318,14 +395,14 @@ body {
   width: 6px;
 }
 .sidebar::-webkit-scrollbar-track {
-  background: #111;
+  background: var(--sidebar-bg);
 }
 .sidebar::-webkit-scrollbar-thumb {
-  background: #333;
+  background: var(--sidebar-border);
   border-radius: 3px;
 }
 .sidebar::-webkit-scrollbar-thumb:hover {
-  background: #444;
+  background: var(--sidebar-accent);
 }
 
 /* ---- Mobile menu toggle button (hidden on desktop) ---- */
@@ -338,7 +415,7 @@ body {
   width: 44px;
   height: 44px;
   background: var(--sidebar-bg);
-  border: 1px solid #2a2a2a;
+  border: 1px solid var(--sidebar-border);
   border-radius: 4px;
   cursor: pointer;
   flex-direction: column;
@@ -350,7 +427,7 @@ body {
 }
 
 .sidebar-toggle:hover {
-  background: #1f1f1f;
+  background: var(--sidebar-hover);
   border-color: var(--sidebar-accent);
 }
 
@@ -379,7 +456,7 @@ body {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(20, 10, 40, 0.55);
   z-index: 150;
   opacity: 0;
   transition: opacity 0.2s;
@@ -399,7 +476,7 @@ body {
   height: 34px;
   background: transparent;
   color: var(--sidebar-text);
-  border: 1px solid #333;
+  border: 1px solid var(--sidebar-border);
   border-radius: 4px;
   font-size: 16pt;
   line-height: 1;
@@ -408,7 +485,7 @@ body {
 }
 
 .sidebar-close:hover {
-  background: #1f1f1f;
+  background: var(--sidebar-hover);
   color: var(--sidebar-accent);
   border-color: var(--sidebar-accent);
 }
