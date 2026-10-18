@@ -448,6 +448,9 @@ body {
 
   .sidebar.is-open {
     transform: translateX(0);
+    /* Raise the open drawer above the hamburger toggle so the
+       toggle (far-left X) sits underneath the taskbar while open. */
+    z-index: 210;
   }
 
   /* Show the toggle and close buttons */
