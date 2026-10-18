@@ -159,6 +159,130 @@ body {
   padding-top: 14px;
 }
 
+/* ---- Screenplay search bar ---- */
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.screenplay-search {
+  flex: 1;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10pt;
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 3px;
+  padding: 8px 10px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.screenplay-search::placeholder {
+  color: var(--sidebar-muted);
+  opacity: 0.85;
+}
+
+.screenplay-search::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.screenplay-search:hover {
+  border-color: var(--sidebar-accent);
+}
+
+.screenplay-search:focus {
+  outline: none;
+  border-color: var(--sidebar-accent);
+  box-shadow: 0 0 0 1px var(--sidebar-accent);
+}
+
+.search-reset {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12pt;
+  line-height: 1;
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 3px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.search-reset:hover {
+  background: var(--sidebar-border);
+  color: var(--sidebar-accent);
+  border-color: var(--sidebar-accent);
+}
+
+.search-results-count {
+  font-size: 9pt;
+  color: var(--sidebar-muted);
+  margin-bottom: 4px;
+  min-height: 1em;
+  flex: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Prev / next match navigation */
+.search-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.search-nav-btn {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12pt;
+  line-height: 1;
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 3px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.search-nav-btn:hover {
+  background: var(--sidebar-border);
+  color: var(--sidebar-accent);
+  border-color: var(--sidebar-accent);
+}
+
+.search-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Highlighted search match inside the screenplay text */
+dialogue mark,
+.action mark,
+.character mark,
+.parenthetical mark,
+.scene-heading mark,
+.transition mark {
+  background: rgba(199, 155, 240, 0.45);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* The currently-selected match while cycling */
+mark.search-mark.is-current {
+  background: var(--sidebar-accent);
+  color: var(--screen-bg);
+  outline: 2px solid var(--sidebar-accent);
+  outline-offset: 1px;
+}
+
 /* ---- Character filter dropdown ---- */
 .filter-row {
   display: flex;
@@ -451,6 +575,41 @@ body {
   transform: translateY(-7px) rotate(-45deg);
 }
 
+/* ---- Left-edge swipe zone (mobile only) ---- */
+.sidebar-edge {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 100vh;
+  z-index: 200;
+  cursor: e-resize;
+  touch-action: pan-y;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-edge-hint {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 2px;
+  transform: translateY(-50%);
+  font-size: 18pt;
+  font-family: "Courier New", Courier, monospace;
+  color: var(--sidebar-accent);
+  opacity: 0.35;
+  pointer-events: none;
+  animation: edge-hint-pulse 2.5s ease-in-out infinite;
+  user-select: none;
+}
+
+@keyframes edge-hint-pulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.6; }
+}
+
 /* ---- Backdrop (mobile only) ---- */
 .sidebar-backdrop {
   display: none;
@@ -530,9 +689,16 @@ body {
     z-index: 210;
   }
 
-  /* Show the toggle and close buttons */
-  .sidebar-toggle {
+  /* Show the edge swipe zone + hint instead of the hamburger */
+  .sidebar-edge {
     display: flex;
+  }
+  .sidebar-edge-hint {
+    display: block;
+  }
+  /* Keep the hamburger button hidden on mobile (already display:none by default) */
+  .sidebar-toggle {
+    display: none;
   }
   .sidebar-close {
     display: block;
@@ -583,4 +749,11 @@ body {
   .title-page h1 {
     font-size: 14pt;
   }
+}
+
+img {
+   max-width: 50%;
+   max-height: 50%;
+   display: block;
+   margin: auto;
 }

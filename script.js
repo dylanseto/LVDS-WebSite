@@ -19,7 +19,10 @@
   const backdrop = document.getElementById("sidebar-backdrop");
 
   function openSidebar() {
-    if (sidebar) sidebar.classList.add("is-open");
+    if (sidebar) {
+      sidebar.style.transform = "";
+      sidebar.classList.add("is-open");
+    }
     if (toggleBtn) toggleBtn.classList.add("is-open");
     if (backdrop) {
       backdrop.classList.add("is-active");
@@ -29,10 +32,14 @@
       });
     }
     if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "true");
+    hideEdgeHint();
   }
 
   function closeSidebar() {
-    if (sidebar) sidebar.classList.remove("is-open");
+    if (sidebar) {
+      sidebar.style.transform = "";
+      sidebar.classList.remove("is-open");
+    }
     if (toggleBtn) toggleBtn.classList.remove("is-open");
     if (backdrop) {
       backdrop.classList.remove("is-visible");
@@ -42,10 +49,178 @@
       }, 200);
     }
     if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+    showEdgeHint();
   }
 
   function isMobile() {
     return window.matchMedia("(max-width: 768px)").matches;
+  }
+
+  /* ----------------------------------------------------------------------
+     Edge swipe-to-open + drag-to-close (mobile only)
+     ---------------------------------------------------------------------- */
+
+  var edgeZone = document.getElementById("sidebar-edge");
+  var edgeHint = document.querySelector(".sidebar-edge-hint");
+
+  // Distance from the left edge (px) where a touch starts the open gesture.
+  var EDGE_ZONE_WIDTH = 24;
+  // Minimum horizontal travel (px) before the gesture commits.
+  var OPEN_THRESHOLD = 60;
+  var CLOSE_THRESHOLD = 80;
+  // Sidebar width — read from CSS var, fallback to 280.
+  function sidebarWidth() {
+    var v = getComputedStyle(document.documentElement)
+      .getPropertyValue("--sidebar-width");
+    return parseInt(v, 10) || 280;
+  }
+
+  function hideEdgeHint() {
+    if (edgeHint) edgeHint.style.display = "none";
+  }
+  function showEdgeHint() {
+    if (edgeHint && isMobile() && sidebar && !sidebar.classList.contains("is-open")) {
+      edgeHint.style.display = "block";
+    }
+  }
+
+  // Show the hint on load (mobile only).
+  showEdgeHint();
+
+  // --- Edge swipe-to-open ------------------------------------------------
+
+  var dragState = {
+    active: false,
+    opening: false,
+    startX: 0,
+    startY: 0,
+    currentX: 0,
+  };
+
+  if (edgeZone) {
+    edgeZone.addEventListener("touchstart", function (e) {
+      if (!isMobile()) return;
+      if (sidebar && sidebar.classList.contains("is-open")) return;
+      var t = e.touches[0];
+      // Only respond to touches that start near the left edge.
+      if (t.clientX > EDGE_ZONE_WIDTH) return;
+
+      dragState.active = true;
+      dragState.startX = t.clientX;
+      dragState.startY = t.clientY;
+      dragState.currentX = t.clientX;
+      dragState.opening = true;
+      // Disable the CSS transition while dragging for 1:1 follow.
+      sidebar.style.transition = "none";
+      // Show backdrop immediately but transparent, will fade in.
+      backdrop.classList.add("is-active");
+      backdrop.style.opacity = "0";
+      hideEdgeHint();
+    }, { passive: true });
+  }
+
+  // --- Unified touchmove / touchend (open + close) -----------------------
+
+  function onTouchMove(e) {
+    if (!dragState.active) return;
+    var t = e.touches[0];
+    dragState.currentX = t.clientX;
+    var dx = t.clientX - dragState.startX;
+    var dy = t.clientY - dragState.startY;
+
+    // If the user is scrolling vertically, cancel the gesture.
+    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 10) {
+      cancelDrag();
+      return;
+    }
+
+    var width = sidebarWidth();
+
+    if (dragState.opening) {
+      // Opening: translate from -width to 0 as finger moves right.
+      var progress = Math.max(0, Math.min(dx, width));
+      sidebar.style.transform = "translateX(" + (-width + progress) + "px)";
+      // Fade backdrop proportionally.
+      backdrop.style.opacity = String(progress / width);
+      // Prevent vertical scroll while dragging horizontally.
+      e.preventDefault();
+    } else {
+      // Closing: translate from 0 toward -width as finger moves left.
+      var pull = Math.min(0, dx); // negative
+      sidebar.style.transform = "translateX(" + pull + "px)";
+      backdrop.style.opacity = String(1 + pull / width);
+      e.preventDefault();
+    }
+  }
+
+  function onTouchEnd(e) {
+    if (!dragState.active) return;
+    dragState.active = false;
+    var dx = dragState.currentX - dragState.startX;
+    var width = sidebarWidth();
+
+    // Restore the CSS transition for the snap animation.
+    sidebar.style.transition = "";
+    backdrop.style.opacity = "";
+
+    if (dragState.opening) {
+      if (dx > OPEN_THRESHOLD) {
+        // Commit open.
+        openSidebar();
+      } else {
+        // Snap back closed.
+        closeSidebar();
+      }
+    } else {
+      if (dx < -CLOSE_THRESHOLD) {
+        closeSidebar();
+      } else {
+        // Snap back open.
+        openSidebar();
+      }
+    }
+  }
+
+  function cancelDrag() {
+    if (!dragState.active) return;
+    dragState.active = false;
+    sidebar.style.transition = "";
+    sidebar.style.transform = "";
+    backdrop.style.opacity = "";
+    backdrop.classList.remove("is-active");
+    backdrop.classList.remove("is-visible");
+  }
+
+  document.addEventListener("touchmove", onTouchMove, { passive: false });
+  document.addEventListener("touchend", onTouchEnd, { passive: true });
+  document.addEventListener("touchcancel", cancelDrag, { passive: true });
+
+  // --- Swipe-to-close on the open sidebar --------------------------------
+
+  if (sidebar) {
+    sidebar.addEventListener("touchstart", function (e) {
+      if (!isMobile()) return;
+      if (!sidebar.classList.contains("is-open")) return;
+      var t = e.touches[0];
+      dragState.active = true;
+      dragState.opening = false;
+      dragState.startX = t.clientX;
+      dragState.startY = t.clientY;
+      dragState.currentX = t.clientX;
+      sidebar.style.transition = "none";
+    }, { passive: true });
+  }
+
+  // Hide hint when the sidebar opens via any means.
+  if (sidebar) {
+    var obs = new MutationObserver(function () {
+      if (sidebar.classList.contains("is-open")) {
+        hideEdgeHint();
+      } else {
+        showEdgeHint();
+      }
+    });
+    obs.observe(sidebar, { attributes: true, attributeFilter: ["class"] });
   }
 
   if (toggleBtn) {
@@ -180,6 +355,26 @@
   const filterSelect = document.getElementById("character-filter");
   const filterReset = document.getElementById("filter-reset");
 
+  /* ----------------------------------------------------------------------
+     Screenplay search
+     - Filters scenes by text content (dialogue, action, headings, etc.)
+     - Highlights matching text with <mark> tags.
+     - Combines with the character filter so both apply together.
+     ---------------------------------------------------------------------- */
+
+  const searchInput = document.getElementById("screenplay-search");
+  const searchReset = document.getElementById("search-reset");
+  const searchCount = document.getElementById("search-results-count");
+  const searchNav = document.getElementById("search-nav");
+  const searchPrev = document.getElementById("search-prev");
+  const searchNext = document.getElementById("search-next");
+  var currentSearchTerm = "";
+
+  // List of <mark> elements for the current search, in document order.
+  var matchMarks = [];
+  // Index into matchMarks of the currently-focused match (-1 = none).
+  var currentMatchIndex = -1;
+
   // Normalize a character cue to its base name: "MAYA (O.S.)" -> "MAYA"
   function normalizeCharacterName(raw) {
     return raw.replace(/\s*\([^)]*\)\s*/g, "").trim().toUpperCase();
@@ -260,27 +455,182 @@
     return emptyNote;
   }
 
-  function applyFilter(character) {
-    const showAll = !character || character === "all";
-    let visibleCount = 0;
+  // Elements within a scene whose text we search & highlight.
+  var SEARCH_SELECTORS = ".scene-heading, .action, .character, .parenthetical, .dialogue p, .transition";
+
+  // Escape a string for safe use inside a RegExp.
+  function escapeRegExp(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  // Remove all previously-added <mark> highlights in a given element.
+  function clearHighlights(el) {
+    if (!el) return;
+    var marks = el.querySelectorAll("mark.search-mark");
+    marks.forEach(function (mark) {
+      var parent = mark.parentNode;
+      if (parent) {
+        parent.replaceChild(document.createTextNode(mark.textContent || ""), mark);
+        parent.normalize();
+      }
+    });
+  }
+
+  // Highlight all occurrences of `term` inside `el` (case-insensitive).
+  function highlightInElement(el, term) {
+    if (!el || !term) return;
+    // Use a non-global regex for the acceptNode test so lastIndex isn't sticky.
+    var testRegex = new RegExp(escapeRegExp(term), "i");
+    var replaceRegex = new RegExp(escapeRegExp(term), "gi");
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        var p = node.parentNode;
+        if (!p) return NodeFilter.FILTER_REJECT;
+        if (p.nodeName === "MARK" || p.nodeName === "SCRIPT") {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return testRegex.test(node.nodeValue || "") ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      },
+    });
+
+    var nodes = [];
+    while (walker.nextNode()) {
+      nodes.push(walker.currentNode);
+    }
+
+    nodes.forEach(function (node) {
+      var text = node.nodeValue || "";
+      var frag = document.createDocumentFragment();
+      var last = 0;
+      var match;
+      replaceRegex.lastIndex = 0;
+      while ((match = replaceRegex.exec(text)) !== null) {
+        if (match.index > last) {
+          frag.appendChild(document.createTextNode(text.slice(last, match.index)));
+        }
+        var mark = document.createElement("mark");
+        mark.className = "search-mark";
+        mark.textContent = match[0];
+        frag.appendChild(mark);
+        last = match.index + match[0].length;
+      }
+      if (last < text.length) {
+        frag.appendChild(document.createTextNode(text.slice(last)));
+      }
+      var parent = node.parentNode;
+      if (parent) {
+        parent.replaceChild(frag, node);
+      }
+    });
+  }
+
+  // Apply highlights across all visible scenes for the current search term.
+  function refreshHighlights() {
+    scenes.forEach(function (scene) {
+      clearHighlights(scene);
+      if (currentSearchTerm && !scene.classList.contains("hidden-scene")) {
+        var els = scene.querySelectorAll(SEARCH_SELECTORS);
+        els.forEach(function (el) {
+          highlightInElement(el, currentSearchTerm);
+        });
+      }
+    });
+    // Rebuild the list of match marks (in document order).
+    matchMarks = Array.from(document.querySelectorAll("mark.search-mark"));
+  }
+
+  // Scroll to and visually focus the match at matchIndex.
+  function focusMatch(index) {
+    // Remove previous current-match styling.
+    matchMarks.forEach(function (m) { m.classList.remove("is-current"); });
+    if (matchMarks.length === 0) {
+      currentMatchIndex = -1;
+      return;
+    }
+    // Wrap around.
+    currentMatchIndex = ((index % matchMarks.length) + matchMarks.length) % matchMarks.length;
+    var mark = matchMarks[currentMatchIndex];
+    mark.classList.add("is-current");
+    mark.scrollIntoView({ behavior: "smooth", block: "center" });
+    updateSearchNavDisplay();
+  }
+
+  function nextMatch() {
+    if (matchMarks.length === 0) return;
+    focusMatch(currentMatchIndex + 1);
+  }
+
+  function prevMatch() {
+    if (matchMarks.length === 0) return;
+    focusMatch(currentMatchIndex - 1);
+  }
+
+  // Update the results-count text and prev/next button state.
+  function updateSearchNavDisplay() {
+    if (!searchCount || !searchNav) return;
+    var total = matchMarks.length;
+    if (total === 0) {
+      searchCount.textContent = "0 matches";
+      searchNav.hidden = true;
+    } else {
+      // 1-based display
+      searchCount.textContent = (currentMatchIndex + 1) + " / " + total;
+      searchNav.hidden = false;
+    }
+    if (searchPrev) searchPrev.disabled = total < 2;
+    if (searchNext) searchNext.disabled = total < 2;
+  }
+
+  // Combined filter: character filter + search term.
+  function applyAllFilters() {
+    var character = filterSelect ? filterSelect.value : "all";
+    var showAllCharacters = !character || character === "all";
+    var term = currentSearchTerm.trim();
+    var lowerTerm = term.toLowerCase();
+    var hasSearch = lowerTerm.length > 0;
+    var visibleCount = 0;
+    var matchCount = 0;
 
     scenes.forEach(function (scene) {
-      const id = scene.getAttribute("id");
-      const hasCharacter = showAll || charactersInScene(scene).indexOf(character) !== -1;
+      var id = scene.getAttribute("id");
+      var isTitlePage = id === "title-page";
 
-      // The title page has no characters; only show it when "all" is selected.
-      const isTitlePage = id === "title-page";
-      const shouldShow = showAll ? true : (isTitlePage ? false : hasCharacter);
+      // Character filter
+      var passesCharacter = showAllCharacters
+        ? true
+        : (isTitlePage ? false : charactersInScene(scene).indexOf(character) !== -1);
+
+      // Search filter
+      var passesSearch = true;
+      if (hasSearch) {
+        if (isTitlePage) {
+          passesSearch = false;
+        } else {
+          var els = scene.querySelectorAll(SEARCH_SELECTORS);
+          passesSearch = false;
+          for (var i = 0; i < els.length; i++) {
+            if ((els[i].textContent || "").toLowerCase().indexOf(lowerTerm) !== -1) {
+              passesSearch = true;
+              break;
+            }
+          }
+        }
+      }
+
+      var shouldShow = passesCharacter && passesSearch && !isTitlePage;
+      if (showAllCharacters && !hasSearch && isTitlePage) {
+        shouldShow = true;
+      }
 
       if (shouldShow) {
         scene.classList.remove("hidden-scene");
         visibleCount++;
+        if (hasSearch) matchCount++;
       } else {
         scene.classList.add("hidden-scene");
       }
 
-      // Mirror visibility to the TOC entry.
-      const tocItem = tocItemBySceneId[id];
+      var tocItem = tocItemBySceneId[id];
       if (tocItem) {
         if (shouldShow) {
           tocItem.classList.remove("hidden-toc");
@@ -290,22 +640,102 @@
       }
     });
 
+    // Refresh highlights for the current search term (rebuilds matchMarks).
+    refreshHighlights();
+
+    // Reset or restore the current-match cursor.
+    if (hasSearch) {
+      // If we had a position, try to keep it clamped; otherwise start at first.
+      if (currentMatchIndex >= matchMarks.length) {
+        currentMatchIndex = matchMarks.length > 0 ? 0 : -1;
+      }
+      if (currentMatchIndex === -1 && matchMarks.length > 0) {
+        currentMatchIndex = 0;
+      }
+      // Apply current-match styling without scrolling on filter changes.
+      matchMarks.forEach(function (m) { m.classList.remove("is-current"); });
+      if (currentMatchIndex >= 0 && matchMarks[currentMatchIndex]) {
+        matchMarks[currentMatchIndex].classList.add("is-current");
+      }
+    } else {
+      currentMatchIndex = -1;
+      matchMarks.forEach(function (m) { m.classList.remove("is-current"); });
+    }
+
+    // Update the results-count + nav button display.
+    updateSearchNavDisplay();
+
     // Show / hide the "no scenes" notice.
-    const note = ensureEmptyNote();
+    var note = ensureEmptyNote();
     if (visibleCount === 0) {
-      note.textContent = "No scenes featuring " + character + ".";
+      var reason = "";
+      if (hasSearch && !showAllCharacters) {
+        reason = "No scenes matching \"" + term + "\" with " + character + ".";
+      } else if (hasSearch) {
+        reason = "No scenes matching \"" + term + "\".";
+      } else if (!showAllCharacters) {
+        reason = "No scenes featuring " + character + ".";
+      }
+      note.textContent = reason;
       note.style.display = "block";
     } else {
       note.style.display = "none";
     }
+  }
 
-    // Re-observe: trigger observer refresh by re-observing visible scenes.
-    // (Simple approach: remove and re-add the observer on visible scenes.)
+  // Debounce the search input so typing stays smooth.
+  var searchTimer = null;
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function () {
+        currentSearchTerm = searchInput.value || "";
+        // Reset cursor when the search text changes.
+        currentMatchIndex = -1;
+        applyAllFilters();
+      }, 120);
+    });
+
+    // Enter = next match, Shift+Enter = previous match.
+    searchInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (matchMarks.length === 0) return;
+        if (e.shiftKey) {
+          prevMatch();
+        } else {
+          nextMatch();
+        }
+        if (isMobile()) closeSidebar();
+      }
+    });
+  }
+
+  if (searchReset) {
+    searchReset.addEventListener("click", function () {
+      if (searchInput) searchInput.value = "";
+      currentSearchTerm = "";
+      currentMatchIndex = -1;
+      applyAllFilters();
+      if (searchInput) searchInput.focus();
+    });
+  }
+
+  if (searchPrev) {
+    searchPrev.addEventListener("click", function () {
+      prevMatch();
+    });
+  }
+
+  if (searchNext) {
+    searchNext.addEventListener("click", function () {
+      nextMatch();
+    });
   }
 
   if (filterSelect) {
     filterSelect.addEventListener("change", function () {
-      applyFilter(filterSelect.value);
+      applyAllFilters();
     });
   }
 
@@ -314,7 +744,7 @@
       if (filterSelect) {
         filterSelect.value = "all";
       }
-      applyFilter("all");
+      applyAllFilters();
     });
   }
 

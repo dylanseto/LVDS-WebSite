@@ -17,6 +17,11 @@
 
   <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
 
+  <!-- Left-edge touch zone for swipe-to-open on mobile -->
+  <div id="sidebar-edge" class="sidebar-edge" aria-hidden="true">
+    <span class="sidebar-edge-hint" aria-hidden="true">&rsaquo;</span>
+  </div>
+
   <aside class="sidebar" aria-label="Table of contents">
     <button id="sidebar-close" class="sidebar-close" type="button"
             aria-label="Close table of contents">&times;</button>
@@ -33,6 +38,25 @@
 
     <div class="tab-panel is-active" id="panel-contents"
          role="tabpanel" aria-labelledby="tab-contents">
+      <h2>Search Screenplay</h2>
+      <div class="search-row">
+        <input type="search" id="screenplay-search" class="screenplay-search"
+               placeholder="Search dialogue, action…"
+               aria-label="Search the screenplay" autocomplete="off" />
+        <button id="search-reset" class="search-reset" type="button"
+                title="Clear search">&times;</button>
+      </div>
+      <div class="search-nav" id="search-nav" hidden>
+        <button id="search-prev" class="search-nav-btn" type="button"
+                title="Previous match (Shift+Enter)"
+                aria-label="Previous match">&#8249;</button>
+        <span id="search-results-count" class="search-results-count"
+              aria-live="polite" role="status"></span>
+        <button id="search-next" class="search-nav-btn" type="button"
+                title="Next match (Enter)"
+                aria-label="Next match">&#8250;</button>
+      </div>
+
       <h2>Filter by Character</h2>
       <div class="filter-row">
         <select id="character-filter" class="character-filter"
@@ -414,6 +438,10 @@
 <div class="character">FRED (O.S.)</div>
 <div class="dialogue"><p>Oh fuck yeah! This bacon survived the war.</p></div>
 <p class="action">DYLAN sits up just as FRED rounds the corner. He's wearing nothing but a brief and an apron. FRED spots DYLAN immediately.</p>
+<<audio controls>
+  <source src="./media/Is You A Wuss.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
 <div class="character">FRED</div>
 <div class="dialogue"><p>Rise and shine, motherfucker. It's a brand new day! Are you gonna stay in bed like a wuss? Are you gonna get up and grab life by the tit balls? Are you a wuss? Are you a wuss? Is u a wuss? You are gonna jump up in 3, 2, 1.</p></div>
 <p class="action">DYLAN groans and hurls a throw pillow at him.</p>
@@ -594,6 +622,8 @@
 <p class="action">He ducks into the bathroom and locks the door. FRED's phone chimes again. He sees another text message from DANIELLE: FRED, WRU? 🙄</p>
 <p class="action">FRED exhales and reaches into his bag. He pulls out a small, shiny, purple glass toy. He smiles.</p>
 <p class="transition">CUT.</p>
+<img src="./media/1.jpg" alt="Fred's Butt Plug">
+
 </section>
       <section class="scene" id="scene-6">
 <h3 class="scene-heading">INT. DANIELLE'S BEDROOM – MIDMORNING</h3>
@@ -1095,6 +1125,7 @@
 <div class="character">TICKET CLERK</div>
 <div class="dialogue"><p>Bonjour ! Ça fera €39.20.</p></div>
 <p class="action">DANIELLE pays and collects the tickets. Nearby, IZZY is holding her phone high as she films the glass bubbles floating above the river.</p>
+<img src="./media/2.jpg" alt="Cable Cars">
 <p class="action">She pans the camera down toward DYLAN.</p>
 <div class="character">IZZY</div>
 <div class="dialogue"><p>Hey, Dylan… I hope you're not a—how do you say it—</p></div>
@@ -1137,6 +1168,7 @@
 <div class="parenthetical">(glances back)</div>
 <div class="dialogue"><p>That's not even half of it. I told you not to wear heels.</p></div>
 <p class="action">DYLAN reads the restaurant sign.</p>
+<img src="./media/3.jpg" alt="Restaurant">
 <div class="character">DYLAN</div>
 <div class="dialogue"><p>Wait… are we... cheating on Moni?</p></div>
 <p class="action">DANIELLE stops at the door and turns toward them.</p>
@@ -1165,6 +1197,7 @@
       <section class="scene" id="scene-12">
 <h3 class="scene-heading">INT. LA FERME À DÉDÉ – CONTINUOUS</h3>
 <p class="action">DYLAN immediately begins scanning the menu. IZZY snaps a picture of the page and squints.</p>
+<img src="./media/4.jpg" alt="Restaurant Menu">
 <div class="character">IZZY</div>
 <div class="dialogue"><p>Okay… where's the English menu?</p></div>
 <div class="character">DYLAN</div>
@@ -1196,6 +1229,7 @@
       <section class="scene" id="scene-13">
 <h3 class="scene-heading">INT. LA FERME À DÉDÉ – LATER</h3>
 <p class="action">A raclette grill arrives and is placed in the center. The server brings bowls of baby potatoes, plates of saucisson, jambon cru, and cured mountain ham, cornichons and pickled onions, and a casserole of Gratin de Pépé.</p>
+<img src="./media/5.jpg" alt="A Raclette Grill">
 <div class="character">DANIELLE</div>
 <div class="dialogue"><p>Alright, mes amis. First lesson in Alpine survival cuisine.</p></div>
 <div class="parenthetical">(exhales dramatically)</div>
@@ -1307,6 +1341,7 @@
 <div class="character">IZZY</div>
 <div class="dialogue"><p>Just take the picture.</p></div>
 <p class="action">DYLAN snaps a few. He previews his shots and stops on one photo. He stares at it... A second too long.</p>
+<img src="./media/6.jpg" alt="Dylan's photo of Izzy">
 <div class="character">IZZY</div>
 <div class="dialogue"><p>What?</p></div>
 <div class="character">DYLAN</div>
@@ -1528,6 +1563,7 @@
 <div class="dialogue"><p>Well… you're the only one I want to know better.</p></div>
 <div class="dialogue"><p>She leans closer to FRED and lightly kisses his neck.</p></div>
 <p class="transition">CUT.</p>
+<img src="./media/7.jpg" alt="Korean Pokemon Card">
 </section>
       <section class="scene" id="scene-16">
 <h3 class="scene-heading">EXT. STREET – OUTSIDE MAISON LOUISE – EARLY EVENING</h3>
@@ -1953,6 +1989,12 @@
 <p class="transition">CUT.</p>
 </section>
       <section class="scene" id="scene-22">
+<audio controls>
+  <source src="./media/Background-Music-Le-Tord-Boyaux.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<br>
+<q>Play the track while reading the scene below.</q>
 <h3 class="scene-heading">INT. LA BOÎTE NOIRE – NIGHT</h3>
 <p class="action">DANIELLE and IZZY push through the crowd. FRED looks up and locks onto DANIELLE for a second.</p>
 <div class="character">FRED</div>
@@ -1989,6 +2031,12 @@
 <p class="transition">FADE OUT.</p>
 </section>
       <section class="scene" id="scene-23">
+<audio controls>
+  <source src="./media/Background-Music-Le-Tord-Boyaux-2.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<br>
+<q>Play the track while reading the scene below.</q>
 <h3 class="scene-heading">INT. LA BOÎTE NOIRE – NIGHT – DANCE FLOOR</h3>
 <p class="action">The music switches. DYLAN squints toward the speakers.</p>
 <div class="character">DYLAN</div>
@@ -2072,6 +2120,12 @@
 <div class="character">IZZY</div>
 <div class="dialogue"><p>Good. Because I honestly don't either.</p></div>
 <p class="action">Then a new song starts. IZZY's face lights up instantly.</p>
+<audio controls>
+  <source src="./media/Background-Music-Le-Tord-Boyaux-3.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<br>
+<q>Play the track while reading the scene below.</q>
 <div class="character">IZZY</div>
 <div class="dialogue"><p>Oh!!! This one. This is our jam.</p></div>
 <p class="action">She grabs DYLAN's hand and pulls him back in. DYLAN resists.</p>
@@ -2102,6 +2156,12 @@
 <p class="transition">FADE OUT.</p>
 </section>
       <section class="scene" id="scene-24">
+<audio controls>
+  <source src="./media/Background-Music-Le-Tord-Boyaux-4.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<br>
+<q>Play the track while reading the scene below.</q>
 <h3 class="scene-heading">INT. LA BOÎTE NOIRE – NIGHT – DANCE FLOOR</h3>
 <p class="action">The music shifts. The crowd slows. DYLAN glances up at the speakers.</p>
 <div class="character">DYLAN</div>
@@ -3026,6 +3086,7 @@
 <p class="action">She hands the phone back. FRED looks down at his phone.</p>
 <p class="action">ON SCREEN:</p>
 <p class="action">VOI – Have fun and ride with care</p>
+<img src="./media/8.jpg" alt="VOI App">
 <div class="character">FRED</div>
 <div class="parenthetical">(glancing up)</div>
 <div class="dialogue"><p>Wait—are we—</p></div>
@@ -3186,6 +3247,7 @@
 <div class="character">DANIELLE</div>
 <div class="dialogue"><p>Exactly.</p></div>
 <p class="action">The quiet hangs for a moment, then... they hear a distant commotion. They both turn. DYLAN and IZZY come into view on the scooter. IZZY is in front, but DYLAN is standing behind her. His arms reach forward awkwardly around her to hold the grips, basically boxing her in. The scooter wobbles slightly as they approach.</p>
+<img src="./media/9.jpg" alt="Izzy & Dylan on a scooter">
 <div class="character">DANIELLE</div>
 <div class="parenthetical">(squints)</div>
 <div class="dialogue"><p>You know that's not how you share a scooter, right?</p></div>
@@ -3234,12 +3296,16 @@
 <p class="action">Translation: Entry into the Resistance</p>
 <p class="action">They enter a narrow corridor. The concrete walls are marked with faded white lettering. The lighting is low. At the far end, a vehicle installation faces the passage. Its headlights are switched on, casting light across the walls and floor.</p>
 <p class="action">They pass another display label: Rue des Alpes</p>
+<img src="./media/10.jpg" alt="Rue des Alpes">
 <p class="action">Translation: Alps Street</p>
 <p class="action">They enter a reconstructed storefront display. A metal shutter is partially lowered over the window. A bicycle is positioned against the front. A street sign is mounted above the doorway. The interior behind the glass is dimly visible.</p>
+<img src="./media/11.jpg" alt="Reconstructured Store Front">
 <p class="action">They continue forward. They arrive at a large relief map beneath a header: Le Maquis en Isère</p>
 <p class="action">Translation: The Maquis in Isère</p>
 <p class="action">They enter a room centered around a large relief map encased in glass. The terrain shows mountains and valleys in layered detail. Small lights mark positions across the landscape. Surrounding walls display illuminated panels arranged in grids.</p>
+<img src="./media/12.jpg" alt="Reconstructured Store Front">
 <p class="action">They approach a secured interior display. A heavy metal door stands open within a concrete passage. The surface is worn and rusted, with a circular locking mechanism at its center. Overhead, they see exposed pipes and wiring run along the walls.</p>
+<img src="./media/13.jpg" alt="Heavy Metal Door">
 <div class="character">FRED</div>
 <div class="dialogue"><p>Is this… the real thing?</p></div>
 <div class="character">DANIELLE</div>
@@ -3559,6 +3625,12 @@
 <div class="character">FRED</div>
 <div class="dialogue"><p>Wait… what’s that?</p></div>
 <p class="action">A voice accompanied by a guitar floats through the trees. A small knot of people stands off the path. DANIELLE tilts her head.</p>
+<audio controls>
+  <source src="./media/Divine idylle.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<br>
+<q>Play the track while reading the scene below.</q>
 <div class="character">DANIELLE</div>
 <div class="dialogue"><p>That’s not normal for her.</p></div>
 <p class="action">FRED is already angling off the path.</p>
@@ -3686,6 +3758,10 @@
 <div class="character">DYLAN</div>
 <div class="dialogue"><p>Exactly.</p></div>
 <p class="action">He shows her the video. She watches. DYLAN studies her reaction.</p>
+<video width="640" height="360" controls >
+  <source src="./media/document_6320823706469800902.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 <div class="character">DYLAN</div>
 <div class="dialogue"><p>Yeah. She was all about highs. Big moments, big gestures. And when it wasn’t that…</p></div>
 <div class="parenthetical">(shrugs)</div>
@@ -4111,6 +4187,7 @@
 <div class="dialogue"><p>Hey—</p></div>
 <p class="action">She physically shoves him toward the fitting rooms. DYLAN laughs under his breath as he disappears behind the curtain. Across the aisle, FRED watches proudly.</p>
 <p class="action">Then, a curtain swings open. IZZY steps out first. The oversized white jacket hangs loosely off her shoulders. The glossy black crop top catches the light subtly while the asymmetrical skirt reveals her tattoo. She poses once with complete confidence.</p>
+<img src="./media/14.jpg" alt="Izzy poses">
 <div class="character">FRED</div>
 <div class="dialogue"><p>Okayyyy.</p></div>
 <div class="character">DANIELLE</div>
@@ -4120,6 +4197,7 @@
 <div class="dialogue"><p>Dylan! You done yet?</p></div>
 <p class="action">Then DYLAN steps out.</p>
 <p class="action">He is wearing an oversized washed gray shirt and off-white cargo pants. The silver “爱” necklace rests at the center of his chest.</p>
+<img src="./media/15.jpg" alt="Dylan Poses">
 <p class="action">DYLAN looks up then immediately sees IZZY and pauses.</p>
 <div class="character">DYLAN</div>
 <div class="dialogue"><p>Wow.</p></div>
@@ -5402,6 +5480,12 @@
 <div class="dialogue"><p>About what?</p></div>
 <div class="character">JP</div>
 <div class="dialogue"><p>About you two not having romantic labels.</p></div>
+<audio controls>
+  <source src="./media/EVENT HALL—BAR.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<br>
+<q>Play the track while reading the scene below.</q>
 <p class="action">IZZY looks at him suspiciously.</p>
 <div class="character">JP (CONT'D)</div>
 <div class="dialogue"><p>What I meant was… you don't have romantic labels yet.</p></div>
@@ -5568,6 +5652,12 @@
       <section class="scene" id="scene-51">
 <h3 class="scene-heading">INT. RESIDENTIAL SUITES – ELEVATOR – NIGHT</h3>
 <p class="action">The elevator doors close around FRED. He presses one of the upper-floor buttons, then leans back against the wall. He glances down at his phone and scrolls through a few photos from the trip. A small smile forms. The elevator passes another floor.</p>
+<audio controls>
+  <source src="./media/ELEVATOR SONG_1.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<br>
+<q>Play the track while reading the scene below.</q>
 <p class="action">The music playing softly through the speakers catches his attention. He listens for a few seconds, his smile grows. FRED looks up at the illuminated buttons. His eyes linger on the floor he selected. Then he chuckles quietly, reaches over, and presses the button again. The light goes out.</p>
 <div class="character">FRED</div>
 <div class="parenthetical">(under his breath, smiling)</div>
@@ -5603,6 +5693,12 @@
 <p class="transition">FADE OUT.</p>
 </section>
       <section class="scene" id="scene-53">
+<audio controls>
+  <source src="./media/MONICA'S CAR.mp3 type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<br>
+<q>Play the track while reading the scene below.</q>
 <h3 class="scene-heading">EXT. MONICAFÉ – NIGHT</h3>
 <p class="action">MONICA locks the front door of her café, checks it twice, then turns... FRED is standing right behind her. She jumps.</p>
 <div class="character">MONICA</div>
@@ -6028,12 +6124,15 @@
 <div class="parenthetical">(looks back at him)</div>
 <div class="dialogue"><p>You made me wait eighteen minutes.</p></div>
 <p class="action">FRED looks at the paddle. DANIELLE lightly taps the paddle against her palm.</p>
+<img src="./media/16.jpg" alt="Paddle">
 <div class="character">FRED</div>
 <div class="dialogue"><p>I can explain.</p></div>
 <div class="character">DANIELLE</div>
 <div class="dialogue"><p>You'd better.</p></div>
 <p class="action">She turns toward a small box beside the dresser and bends over. Her black thong barely covers the moist lips of her pussy.</p>
+<img src="./media/17.jpg" alt="Black Thong">
 <p class="action">When she straightens, she turns back with a black leather flogger held between her teeth for a beat. FRED takes a slow breath.</p>
+<img src="./media/18.jpg" alt="Black Leather Flogger">
 <div class="character">FRED</div>
 <div class="dialogue"><p>Okay... Wow.</p></div>
 <div class="parenthetical">(stammers, smiling)</div>
@@ -6095,6 +6194,8 @@
 <p class="action">IZZY types back with a mischievous smile.</p>
 <p class="action">IZZY: Oh, are you now? 🤭</p>
 <p class="action">She gets up, walks over, and takes a selfie. Her camera flashes brightly in the dark room. She studies it. She turns around to take another. This one makes her grin. She sends both.</p>
+<img src="./media/19.jpg" alt="Izzy Spicy selfie 1">
+<img src="./media/20.jpg" alt="Izzy Spicy selfie 2">
 <p class="action">ON SCREEN — Delivered.</p>
 <p class="action">She returns to the bed, pulling the covers around herself. She slides the sex toy deeper this time. She closes her eyes.</p>
 <p class="transition">FADE OUT.</p>
@@ -6473,6 +6574,7 @@
 <div class="dialogue"><p>Wait.</p></div>
 <p class="action">IZZY turns.</p>
 <p class="action">DYLAN reaches for his bag and rummages through it before pulling out a handful of purple-packaged snacks. He holds them out to her.</p>
+<img src="./media/21.jpg" alt="Ube Snacks">
 <div class="character">DYLAN</div>
 <div class="dialogue"><p>I actually forgot to give you something last night.</p></div>
 <p class="action">IZZY stares at the pile.</p>
