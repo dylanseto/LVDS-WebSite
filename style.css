@@ -755,5 +755,15 @@ img {
    max-width: 50%;
    max-height: 50%;
    display: block;
-   margin: auto;
+   text-align: right;
+}
+
+blockquote {
+  background-color: #ededed;
+  margin: 10px auto;
+  padding: 15px;
+  border-radius: 5px;
+  content: "\201C";
+  text-align: left;
+  border-left: 4px solid #ff5733; 
 }
