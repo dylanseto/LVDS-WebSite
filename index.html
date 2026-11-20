@@ -17,6 +17,31 @@
 
   <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
 
+  <!-- Mobile-only bookmark header (fixed top bar, hidden on desktop) -->
+  <header id="mobile-bookmark-header" class="mobile-bookmark-header" aria-label="Bookmark">
+    <span class="mobile-bookmark-icon" aria-hidden="true">&#9733;</span>
+    <button id="bookmark-btn-mobile" class="mobile-bookmark-save" type="button"
+            title="Bookmark current spot">Save Spot</button>
+    <span id="mobile-bookmark-text" class="mobile-bookmark-text">No bookmark saved</span>
+    <button id="bookmark-clear-mobile" class="mobile-bookmark-clear" type="button"
+            title="Remove bookmark" hidden>&times;</button>
+  </header>
+
+  <!-- Desktop-only floating bookmark button (fixed bottom-right, hidden on mobile) -->
+  <div id="bookmark-fab-wrap" class="bookmark-fab-wrap" aria-label="Bookmark">
+    <div id="bookmark-fab-info" class="bookmark-fab-info" hidden>
+      <span class="bookmark-fab-info-icon" aria-hidden="true">&#9733;</span>
+      <span id="bookmark-fab-text" class="bookmark-fab-text"></span>
+      <button id="bookmark-clear-fab" class="bookmark-fab-clear" type="button"
+              title="Remove bookmark" hidden>&times;</button>
+    </div>
+    <button id="bookmark-btn-fab" class="bookmark-fab-btn" type="button"
+            title="Bookmark current spot">
+      <span class="bookmark-fab-icon" aria-hidden="true">&#9733;</span>
+      <span class="bookmark-fab-label">Save Spot</span>
+    </button>
+  </div>
+
   <!-- Left-edge touch zone for swipe-to-open on mobile -->
   <div id="sidebar-edge" class="sidebar-edge" aria-hidden="true">
     <span class="sidebar-edge-hint" aria-hidden="true">&rsaquo;</span>
@@ -64,6 +89,21 @@
         </select>
         <button id="filter-reset" class="filter-reset" type="button"
                 title="Reset filter">&times;</button>
+      </div>
+
+      <h2>Bookmark</h2>
+      <div class="bookmark-row">
+        <button id="bookmark-btn" class="bookmark-btn" type="button"
+                title="Bookmark current spot">
+          <span class="bookmark-icon" aria-hidden="true">&#9733;</span>
+          <span class="bookmark-label">Save Spot Here</span>
+        </button>
+        <button id="bookmark-clear" class="bookmark-clear" type="button"
+                title="Remove bookmark" hidden>&times;</button>
+      </div>
+      <div id="bookmark-info" class="bookmark-info" hidden>
+        <span class="bookmark-info-icon" aria-hidden="true">&#9733;</span>
+        <span id="bookmark-text" class="bookmark-text">No bookmark saved</span>
       </div>
 
       <h2>Table of Contents</h2>
@@ -140,12 +180,12 @@
         <li><a href="#scene-70">70. INT. MONICAFÉ – KITCHEN – MORNING</a></li>
         <li><a href="#scene-71">71. INT. MONICAFÉ – DINING AREA – MOMENTS LATER</a></li>
         <li><a href="#scene-72">72. INT. MONICAFÉ – DINING AREA – MOMENTS LATER</a></li>
-        <li><a href="#scene-73">73. INT. MONICAFÉ – DINING AREA – NIGHT</a></li>
-        <li><a href="#scene-74">74. INT. MONICAFÉ – DINING AREA – NIGHT</a></li>
-        <li><a href="#scene-75">75. INT. MONICAFÉ – DINING AREA – NIGHT</a></li>
-        <li><a href="#scene-76">76. INT. MONICAFÉ – OFFICE – NIGHT – LATER</a></li>
-        <li><a href="#scene-77">77. EXT. MONICAFÉ – NIGHT</a></li>
-        <li><a href="#scene-78">78. INT. GABRIEL'S CAR – MOVING – NIGHT</a></li>
+        <li><a href="#scene-73">73. INT. MONICAFÉ – DINING AREA – NIGHT<span class="badge">NEW</span></a></li>
+        <li><a href="#scene-74">74. INT. MONICAFÉ – DINING AREA – NIGHT<span class="badge">NEW</span></a></li>
+        <li><a href="#scene-75">75. INT. MONICAFÉ – DINING AREA – NIGHT<span class="badge">NEW</span></a></li>
+        <li><a href="#scene-76">76. INT. MONICAFÉ – OFFICE – NIGHT – LATER<span class="badge">NEW</span></a></li>
+        <li><a href="#scene-77">77. EXT. MONICAFÉ – NIGHT<span class="badge">NEW</span></a></li>
+        <li><a href="#scene-78">78. INT. GABRIEL'S CAR – MOVING – NIGHT<span class="badge">NEW</span></a></li>
       </ul>
     </div>
 

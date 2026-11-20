@@ -306,6 +306,7 @@
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           const id = entry.target.getAttribute("id");
+          currentSceneId = id;
           tocLinks.forEach(function (link) {
             link.classList.remove("active");
           });
@@ -322,6 +323,9 @@
       threshold: 0,
     }
   );
+
+  // Track which scene the user is currently viewing (updated by the observer).
+  var currentSceneId = null;
 
   scenes.forEach(function (scene) {
     observer.observe(scene);
@@ -745,6 +749,258 @@
         filterSelect.value = "all";
       }
       applyAllFilters();
+    });
+  }
+
+  /* ----------------------------------------------------------------------
+     Bookmark — save / restore reading position (front-end only, localStorage)
+     - "Save Spot Here" captures the current scene + pixel offset.
+     - On page load, if a bookmark exists, the page auto-scrolls to it.
+     - The saved bookmark is shown in the sidebar with scene number + title.
+     - The corresponding TOC entry gets a star indicator.
+     ---------------------------------------------------------------------- */
+
+  var BOOKMARK_KEY = "lvds-bookmark";
+  var bookmarkBtn = document.getElementById("bookmark-btn");
+  var bookmarkClearBtn = document.getElementById("bookmark-clear");
+  var bookmarkInfo = document.getElementById("bookmark-info");
+  var bookmarkText = document.getElementById("bookmark-text");
+
+  // Desktop FAB elements
+  var bookmarkBtnFab = document.getElementById("bookmark-btn-fab");
+  var bookmarkClearFab = document.getElementById("bookmark-clear-fab");
+  var bookmarkFabInfo = document.getElementById("bookmark-fab-info");
+  var bookmarkFabText = document.getElementById("bookmark-fab-text");
+
+  // Mobile header elements
+  var bookmarkBtnMobile = document.getElementById("bookmark-btn-mobile");
+  var bookmarkClearMobile = document.getElementById("bookmark-clear-mobile");
+  var mobileBookmarkText = document.getElementById("mobile-bookmark-text");
+
+  // Read the saved bookmark from localStorage. Returns null if none/corrupt.
+  function readBookmark() {
+    try {
+      var raw = localStorage.getItem(BOOKMARK_KEY);
+      if (!raw) return null;
+      var data = JSON.parse(raw);
+      if (data && typeof data.sceneId === "string") {
+        return data;
+      }
+    } catch (e) {
+      // Ignore parse errors — treat as no bookmark.
+    }
+    return null;
+  }
+
+  // Persist a bookmark object to localStorage.
+  function writeBookmark(data) {
+    try {
+      localStorage.setItem(BOOKMARK_KEY, JSON.stringify(data));
+    } catch (e) {
+      // Storage might be full or disabled — silently ignore.
+    }
+  }
+
+  // Remove the bookmark from localStorage.
+  function removeBookmark() {
+    try {
+      localStorage.removeItem(BOOKMARK_KEY);
+    } catch (e) {
+      // Ignore.
+    }
+  }
+
+  // Extract a human-readable label from a scene element: "Scene 12 — INT. …"
+  function sceneLabel(sceneEl) {
+    if (!sceneEl) return "";
+    var heading = sceneEl.querySelector(".scene-heading");
+    var text = (heading ? heading.textContent : sceneEl.getAttribute("id")) || "";
+    return text.trim();
+  }
+
+  // Add or remove the star indicator on the TOC link for a given scene id.
+  function updateTocBookmarkIndicator(sceneId, add) {
+    if (!sceneId) return;
+    var link = linkBySceneId[sceneId];
+    if (!link) return;
+    if (add) {
+      link.classList.add("has-bookmark");
+    } else {
+      link.classList.remove("has-bookmark");
+    }
+  }
+
+  // Refresh the sidebar bookmark UI from the saved bookmark data (or lack thereof).
+  function refreshBookmarkUI() {
+    var bm = readBookmark();
+    if (bm) {
+      // --- Sidebar (original) ---
+      if (bookmarkInfo) bookmarkInfo.hidden = false;
+      if (bookmarkClearBtn) bookmarkClearBtn.hidden = false;
+      if (bookmarkText) {
+        bookmarkText.textContent = "Saved: " + bm.label;
+      }
+      // --- Desktop FAB ---
+      if (bookmarkFabInfo) bookmarkFabInfo.hidden = false;
+      if (bookmarkClearFab) bookmarkClearFab.hidden = false;
+      if (bookmarkFabText) {
+        bookmarkFabText.textContent = bm.label;
+      }
+      // --- Mobile header ---
+      if (mobileBookmarkText) {
+        mobileBookmarkText.textContent = "Saved: " + bm.label;
+      }
+      if (bookmarkClearMobile) bookmarkClearMobile.hidden = false;
+      // Highlight the TOC entry.
+      updateTocBookmarkIndicator(bm.sceneId, true);
+    } else {
+      // --- Sidebar (original) ---
+      if (bookmarkInfo) bookmarkInfo.hidden = true;
+      if (bookmarkClearBtn) bookmarkClearBtn.hidden = true;
+      if (bookmarkText) {
+        bookmarkText.textContent = "No bookmark saved";
+      }
+      // --- Desktop FAB ---
+      if (bookmarkFabInfo) bookmarkFabInfo.hidden = true;
+      if (bookmarkClearFab) bookmarkClearFab.hidden = true;
+      if (bookmarkFabText) {
+        bookmarkFabText.textContent = "";
+      }
+      // --- Mobile header ---
+      if (mobileBookmarkText) {
+        mobileBookmarkText.textContent = "No bookmark saved";
+      }
+      if (bookmarkClearMobile) bookmarkClearMobile.hidden = true;
+    }
+  }
+
+  // Save the current reading spot.
+  function saveBookmark() {
+    var sceneId = currentSceneId;
+    if (!sceneId) {
+      // Fallback: find the topmost visible scene manually.
+      for (var i = 0; i < scenes.length; i++) {
+        var rect = scenes[i].getBoundingClientRect();
+        if (rect.bottom > 0 && rect.top < window.innerHeight) {
+          sceneId = scenes[i].getAttribute("id");
+          break;
+        }
+      }
+    }
+    if (!sceneId) return;
+
+    var sceneEl = document.getElementById(sceneId);
+    if (!sceneEl) return;
+
+    // Pixel offset of the scene's top from the viewport top, so we can
+    // restore the exact scroll position within the scene.
+    var sceneTop = sceneEl.offsetTop;
+    var scrollY = window.scrollY || window.pageYOffset;
+    var offsetInScene = scrollY - sceneTop;
+    if (offsetInScene < 0) offsetInScene = 0;
+
+    writeBookmark({
+      sceneId: sceneId,
+      label: sceneLabel(sceneEl),
+      offset: offsetInScene,
+      savedAt: new Date().toISOString(),
+    });
+
+    refreshBookmarkUI();
+
+    // Brief visual feedback: flash "✓ Saved!" on whichever save button triggered the action.
+    function flashSaved(btn, labelSelector, fallback) {
+      if (!btn) return;
+      var labelEl = labelSelector ? btn.querySelector(labelSelector) : btn;
+      if (!labelEl) return;
+      var orig = labelEl.textContent;
+      labelEl.textContent = "\u2713 Saved!";
+      setTimeout(function () {
+        labelEl.textContent = orig || fallback || "Save Spot";
+      }, 1500);
+    }
+    // Sidebar button
+    if (bookmarkBtn) {
+      flashSaved(bookmarkBtn, ".bookmark-label", "Save Spot Here");
+    }
+    // Desktop FAB
+    if (bookmarkBtnFab) {
+      flashSaved(bookmarkBtnFab, ".bookmark-fab-label", "Save Spot");
+    }
+    // Mobile header button
+    if (bookmarkBtnMobile) {
+      flashSaved(bookmarkBtnMobile, null, "Save Spot");
+    }
+  }
+
+  // Clear the bookmark.
+  function clearBookmark() {
+    var bm = readBookmark();
+    if (bm) {
+      updateTocBookmarkIndicator(bm.sceneId, false);
+    }
+    removeBookmark();
+    refreshBookmarkUI();
+  }
+
+  // Restore the bookmark on page load: scroll to the saved scene + offset.
+  function restoreBookmark() {
+    var bm = readBookmark();
+    if (!bm) return;
+
+    var sceneEl = document.getElementById(bm.sceneId);
+    if (!sceneEl) return;
+
+    var target = sceneEl.offsetTop + (bm.offset || 0);
+    // Use instant jump on load — smooth-scrolling a long distance on load
+    // is disorienting and delays the user.
+    window.scrollTo(0, target);
+  }
+
+  // Wire up the buttons.
+  if (bookmarkBtn) {
+    bookmarkBtn.addEventListener("click", function () {
+      saveBookmark();
+    });
+  }
+  if (bookmarkClearBtn) {
+    bookmarkClearBtn.addEventListener("click", function () {
+      clearBookmark();
+    });
+  }
+  // Desktop FAB
+  if (bookmarkBtnFab) {
+    bookmarkBtnFab.addEventListener("click", function () {
+      saveBookmark();
+    });
+  }
+  if (bookmarkClearFab) {
+    bookmarkClearFab.addEventListener("click", function () {
+      clearBookmark();
+    });
+  }
+  // Mobile header
+  if (bookmarkBtnMobile) {
+    bookmarkBtnMobile.addEventListener("click", function () {
+      saveBookmark();
+    });
+  }
+  if (bookmarkClearMobile) {
+    bookmarkClearMobile.addEventListener("click", function () {
+      clearBookmark();
+    });
+  }
+
+  // Initialize the UI and attempt to restore on load.
+  refreshBookmarkUI();
+
+  // Restore the bookmark after the page is fully loaded (fonts, layout).
+  // Use requestAnimationFrame to ensure layout is settled before scrolling.
+  if (document.readyState === "complete") {
+    requestAnimationFrame(restoreBookmark);
+  } else {
+    window.addEventListener("load", function () {
+      requestAnimationFrame(restoreBookmark);
     });
   }
 

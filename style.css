@@ -344,6 +344,272 @@ mark.search-mark.is-current {
   border-color: var(--sidebar-accent);
 }
 
+/* ---- Bookmark ---- */
+.bookmark-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.bookmark-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10pt;
+  font-weight: bold;
+  text-align: left;
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 3px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.bookmark-btn:hover {
+  background: var(--sidebar-border);
+  color: var(--sidebar-accent);
+  border-color: var(--sidebar-accent);
+}
+
+.bookmark-icon {
+  font-size: 12pt;
+  line-height: 1;
+  color: var(--sidebar-accent);
+}
+
+.bookmark-btn:hover .bookmark-icon {
+  color: #fff;
+}
+
+.bookmark-clear {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12pt;
+  line-height: 1;
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+  border: 1px solid var(--sidebar-border);
+  border-radius: 3px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.bookmark-clear:hover {
+  background: var(--sidebar-border);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.bookmark-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 9pt;
+  color: var(--sidebar-muted);
+  background: var(--sidebar-hover);
+  border: 1px solid var(--sidebar-border);
+  border-left: 3px solid var(--sidebar-accent);
+  border-radius: 3px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.bookmark-info-icon {
+  font-size: 10pt;
+  color: var(--sidebar-accent);
+  flex-shrink: 0;
+}
+
+.bookmark-text {
+  word-break: break-word;
+}
+
+/* Highlight TOC entry that has a bookmark */
+.toc a.has-bookmark::before {
+  content: "\2605";
+  margin-right: 4px;
+  color: var(--sidebar-accent);
+}
+
+/* ---- Desktop floating bookmark button (FAB, bottom-right) ---- */
+.bookmark-fab-wrap {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.bookmark-fab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 10pt;
+  font-weight: bold;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  border: 2px solid var(--sidebar-accent);
+  border-radius: 32px;
+  padding: 10px 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.bookmark-fab-btn:hover {
+  background: var(--sidebar-accent);
+  color: #160f24;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+}
+
+.bookmark-fab-icon {
+  font-size: 13pt;
+  line-height: 1;
+  color: var(--sidebar-accent);
+  transition: color 0.15s;
+}
+
+.bookmark-fab-btn:hover .bookmark-fab-icon {
+  color: #160f24;
+}
+
+.bookmark-fab-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 9pt;
+  color: var(--sidebar-text);
+  background: var(--sidebar-bg);
+  border: 1px solid var(--sidebar-border);
+  border-left: 3px solid var(--sidebar-accent);
+  border-radius: 6px;
+  padding: 7px 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bookmark-fab-info[hidden] {
+  display: none;
+}
+
+.bookmark-fab-info-icon {
+  font-size: 10pt;
+  color: var(--sidebar-accent);
+  flex-shrink: 0;
+}
+
+.bookmark-fab-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookmark-fab-clear {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11pt;
+  line-height: 1;
+  background: transparent;
+  color: var(--sidebar-muted);
+  border: none;
+  padding: 0 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.bookmark-fab-clear:hover {
+  color: #ef4444;
+}
+
+/* ---- Mobile bookmark header (fixed top bar) ---- */
+.mobile-bookmark-header {
+  display: none; /* shown only on mobile via media query */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  height: 48px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  background: var(--sidebar-bg);
+  border-bottom: 2px solid var(--sidebar-accent);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 9pt;
+  color: var(--sidebar-text);
+}
+
+.mobile-bookmark-icon {
+  font-size: 12pt;
+  color: var(--sidebar-accent);
+  flex-shrink: 0;
+}
+
+.mobile-bookmark-save {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 9pt;
+  font-weight: bold;
+  background: var(--sidebar-hover);
+  color: var(--sidebar-text);
+  border: 1px solid var(--sidebar-accent);
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.mobile-bookmark-save:hover {
+  background: var(--sidebar-accent);
+  color: #160f24;
+}
+
+.mobile-bookmark-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--sidebar-muted);
+  font-size: 8.5pt;
+}
+
+.mobile-bookmark-clear {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13pt;
+  line-height: 1;
+  background: transparent;
+  color: var(--sidebar-muted);
+  border: none;
+  padding: 0 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+.mobile-bookmark-clear:hover {
+  color: #ef4444;
+}
+
 /* A scene that is filtered out */
 .scene.hidden-scene {
   display: none;
@@ -675,6 +941,14 @@ mark.search-mark.is-current {
     --sidebar-width: 280px;
   }
 
+  /* Show the mobile bookmark header, hide the desktop FAB */
+  .mobile-bookmark-header {
+    display: flex;
+  }
+  .bookmark-fab-wrap {
+    display: none;
+  }
+
   /* Sidebar becomes a slide-in drawer */
   .sidebar {
     transform: translateX(-100%);
@@ -712,7 +986,7 @@ mark.search-mark.is-current {
   /* Full-width content; no left margin for the sidebar */
   .content {
     margin-left: 0;
-    padding: 64px 16px 80px;
+    padding: 112px 16px 80px; /* 112px = 48px bookmark header + 64px original */
   }
 
   /* The paper scales down with comfortable margins */
@@ -767,3 +1041,24 @@ blockquote {
   text-align: left;
   border-left: 4px solid #ff5733; 
 }
+
+.badge {
+      position: relative;
+      
+      background-color: #ef4444; /* Bright red alert color */
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: bold;
+      
+      /* Perfect circle dimensions using Flexbox to center text */
+      width: 30px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      /* Optional: border matching the background to separate the badge visually */
+      border: 1px solid #ffffff; 
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
